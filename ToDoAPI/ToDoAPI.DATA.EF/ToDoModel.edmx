@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="ToDoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="ToDoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Categories">
           <Key>
             <PropertyRef Name="CategoryId" />
@@ -42,7 +42,8 @@
             <End Role="ToDoItems" EntitySet="ToDoItems" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ToDoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -50,57 +51,41 @@
           <Key>
             <PropertyRef Name="CategoryId" />
           </Key>
-          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="ToDoItems" Relationship="ToDoModel.FK_ToDoItems_Categories1" FromRole="Category" ToRole="ToDoItem" />
+          <NavigationProperty Name="ToDoItems" Relationship="Self.FK_ToDoItems_Categories1" FromRole="Categories" ToRole="ToDoItems" />
         </EntityType>
         <EntityType Name="ToDoItem">
           <Key>
             <PropertyRef Name="ToDoId" />
           </Key>
-          <Property Name="ToDoId" Type="Int32" Nullable="false" />
+          <Property Name="ToDoId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Action" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Done" Type="Boolean" Nullable="false" />
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Category" Relationship="Self.FK_ToDoItems_Categories" FromRole="ToDoItems" ToRole="Categories" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_ToDoItems_Categories1" FromRole="ToDoItems" ToRole="Categories" />
         </EntityType>
-        <Association Name="FK_ToDoItems_Categories">
+        <Association Name="FK_ToDoItems_Categories1">
           <End Role="Categories" Type="Self.Category" Multiplicity="1" />
-          <End Role="ToDoItems" Type="Self.ToDoItem" Multiplicity="0..1" />
+          <End Role="ToDoItems" Type="Self.ToDoItem" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Categories">
               <PropertyRef Name="CategoryId" />
             </Principal>
             <Dependent Role="ToDoItems">
-              <PropertyRef Name="ToDoId" />
+              <PropertyRef Name="CategoryId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="ToDoEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="ToDoItems" EntityType="Self.ToDoItem" />
-          <AssociationSet Name="FK_ToDoItems_Categories" Association="Self.FK_ToDoItems_Categories">
+          <AssociationSet Name="FK_ToDoItems_Categories1" Association="Self.FK_ToDoItems_Categories1">
             <End Role="Categories" EntitySet="Categories" />
             <End Role="ToDoItems" EntitySet="ToDoItems" />
           </AssociationSet>
-          <AssociationSet Name="FK_ToDoItems_Categories1" Association="ToDoModel.FK_ToDoItems_Categories1">
-            <End Role="Category" EntitySet="Categories" />
-            <End Role="ToDoItem" EntitySet="ToDoItems" />
-          </AssociationSet>
         </EntityContainer>
-        <Association Name="FK_ToDoItems_Categories1">
-          <End Type="ToDoModel.Category" Role="Category" Multiplicity="1" />
-          <End Type="ToDoModel.ToDoItem" Role="ToDoItem" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Category">
-              <PropertyRef Name="CategoryId" />
-            </Principal>
-            <Dependent Role="ToDoItem">
-              <PropertyRef Name="CategoryId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
